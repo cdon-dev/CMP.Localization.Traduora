@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "sample\Web\Web.cspro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "src\Core\Core.csproj", "{79B4E158-DADA-4A56-A3BC-E0CCD012FA10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Traduora", "Traduora\Traduora.csproj", "{A007D934-6807-49F7-B31F-34B9C6AFC5C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Traduora", "src\Traduora\Traduora.csproj", "{A007D934-6807-49F7-B31F-34B9C6AFC5C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
