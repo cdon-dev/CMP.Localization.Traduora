@@ -7,7 +7,7 @@ using Traduora.Client.Api;
 
 namespace Traduora.Client
 {
-	public class TraduoraClient
+    public class TraduoraClient
     {
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "https://traduora.azurewebsites.net/api/v1";
@@ -20,7 +20,8 @@ namespace Traduora.Client
             _httpClient.BaseAddress = new Uri(BaseUrl);
         }
 
-        public async Task<JObject> GetTranslations(string projectId, string locale, string auth, string format = DefaultFormat)
+        public async Task<JObject> GetTranslations(string projectId, string locale, string auth,
+            string format = DefaultFormat)
         {
             var traduoraApi = RestService.For<ITraduoraApi>(_httpClient);
 

@@ -16,8 +16,11 @@ namespace Traduora.Client
     {
         public HttpLoggingHandler(HttpMessageHandler innerHandler = null)
             : base(innerHandler ?? new HttpClientHandler())
-        { }
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+        }
+
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
             var req = request;
             var id = Guid.NewGuid().ToString();
@@ -35,13 +38,13 @@ namespace Traduora.Client
                 foreach (var header in req.Content.Headers)
                     Debug.WriteLine($"{msg} {header.Key}: {string.Join(", ", header.Value)}");
 
-                if (req.Content is StringContent || this.IsTextBasedContentType(req.Headers) || this.IsTextBasedContentType(req.Content.Headers))
+                if (req.Content is StringContent || this.IsTextBasedContentType(req.Headers) ||
+                    this.IsTextBasedContentType(req.Content.Headers))
                 {
                     var result = await req.Content.ReadAsStringAsync();
 
                     Debug.WriteLine($"{msg} Content:");
                     Debug.WriteLine($"{msg} {string.Join("", result)}");
-
                 }
             }
 
@@ -59,7 +62,8 @@ namespace Traduora.Client
 
             var resp = response;
 
-            Debug.WriteLine($"{msg} {req.RequestUri.Scheme.ToUpper()}/{resp.Version} {(int)resp.StatusCode} {resp.ReasonPhrase}");
+            Debug.WriteLine(
+                $"{msg} {req.RequestUri.Scheme.ToUpper()}/{resp.Version} {(int) resp.StatusCode} {resp.ReasonPhrase}");
 
             foreach (var header in resp.Headers)
                 Debug.WriteLine($"{msg} {header.Key}: {string.Join(", ", header.Value)}");
@@ -69,7 +73,8 @@ namespace Traduora.Client
                 foreach (var header in resp.Content.Headers)
                     Debug.WriteLine($"{msg} {header.Key}: {string.Join(", ", header.Value)}");
 
-                if (resp.Content is StringContent || this.IsTextBasedContentType(resp.Headers) || this.IsTextBasedContentType(resp.Content.Headers))
+                if (resp.Content is StringContent || this.IsTextBasedContentType(resp.Headers) ||
+                    this.IsTextBasedContentType(resp.Content.Headers))
                 {
                     start = DateTime.Now;
                     var result = await resp.Content.ReadAsStringAsync();
@@ -85,7 +90,7 @@ namespace Traduora.Client
             return response;
         }
 
-        readonly string[] types = new[] { "html", "text", "xml", "json", "txt", "x-www-form-urlencoded" };
+        readonly string[] types = new[] {"html", "text", "xml", "json", "txt", "x-www-form-urlencoded"};
 
         bool IsTextBasedContentType(HttpHeaders headers)
         {
