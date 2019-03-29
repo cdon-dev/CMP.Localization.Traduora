@@ -10,14 +10,13 @@ namespace Traduora.Client
     public class TraduoraClient
     {
         private readonly HttpClient _httpClient;
-        private const string BaseUrl = "https://traduora.azurewebsites.net/api/v1";
         private const string DefaultFormat = "jsonnested";
 
-        public TraduoraClient(bool logging = false)
+        public TraduoraClient(string baseUrl, bool logging = false)
         {
             _httpClient = logging ? new HttpClient(new HttpLoggingHandler()) : new HttpClient();
 
-            _httpClient.BaseAddress = new Uri(BaseUrl);
+            _httpClient.BaseAddress = new Uri(baseUrl);
         }
 
         public async Task<JObject> GetTranslations(string projectId, string locale, string auth,
