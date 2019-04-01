@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
@@ -9,10 +11,12 @@ namespace Web.Controllers
     public class HomeController : Controller
     {
         private readonly IConfiguration _config;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public HomeController(IConfiguration config)
+        public HomeController(IConfiguration config, IHttpClientFactory httpClientFactory)
         {
             _config = config;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<string> Index(string locale = "de_DE")
@@ -23,7 +27,10 @@ namespace Web.Controllers
             string projectId = "03aac4d9-a898-49f0-8546-1343c2964b4a";
             //=========================================================================
 
-            var traduoraClient = new TraduoraClient(_config["TraduoraApi:BaseUrl"]);
+            HttpClient httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_config["TraduoraApi:BaseUrl"]);
+
+            var traduoraClient = new TraduoraClient(httpClient);
 
             string key = await traduoraClient.Authenticate(clientId, clientSecret);
 

@@ -14,6 +14,9 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddHttpClient("HttpClient");
+
             services.AddSingleton<IStringLocalizer>(new StringLocalizer(() =>
                 new Dictionary<string, IReadOnlyDictionary<string, string>>()));
         }

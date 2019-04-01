@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Refit;
@@ -12,11 +11,9 @@ namespace Traduora.Client
         private readonly HttpClient _httpClient;
         private const string DefaultFormat = "jsonnested";
 
-        public TraduoraClient(string baseUrl, bool logging = false)
+        public TraduoraClient(HttpClient httpClient)
         {
-            _httpClient = logging ? new HttpClient(new HttpLoggingHandler()) : new HttpClient();
-
-            _httpClient.BaseAddress = new Uri(baseUrl);
+            _httpClient = httpClient;
         }
 
         public async Task<JObject> GetTranslations(string projectId, string locale, string auth,
