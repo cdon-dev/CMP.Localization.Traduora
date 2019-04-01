@@ -17,9 +17,9 @@ namespace Core
             set => _culture = value;
         }
 
-        public StringLocalizer(Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProviderProvider)
+        public StringLocalizer(Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProvider)
         {
-            _modelProvider = modelProviderProvider;
+            _modelProvider = modelProvider;
         }
 
         public StringLocalizer(

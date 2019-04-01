@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,8 +21,9 @@ namespace Web
 
             services.AddSingleton<IStringLocalizer>(sp =>
                 {
-                    return new StringLocalizer(
-                        () => sp.GetRequiredService<ITraduoraService>().GetTranslations().Result);
+                    var cache = new CacheManager(sp.GetRequiredService<ITraduoraService>().GetTranslations);
+
+                    return new StringLocalizer(cache.DataProvider);
                 });
         }
 
