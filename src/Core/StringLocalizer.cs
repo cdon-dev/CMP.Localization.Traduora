@@ -1,31 +1,46 @@
-﻿using Microsoft.Extensions.Localization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using Microsoft.Extensions.Localization;
 
 namespace Core
 {
-    public class StringLocalizer : IStringLocalizer
-    {
-        readonly Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProvider;
+	public class StringLocalizer : IStringLocalizer
+	{
+		private readonly Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> _modelProvider;
 
-        public StringLocalizer(Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProvider)
+        private CultureInfo _culture;
+        private CultureInfo Culture
         {
-            this.modelProvider = modelProvider;
+            get => _culture ?? CultureInfo.CurrentUICulture;
+            set => _culture = value;
         }
 
-        public LocalizedString this[string name] => throw new NotImplementedException();
+        public StringLocalizer(Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProviderProvider)
+        {
+            _modelProvider = modelProviderProvider;
+        }
 
-        public LocalizedString this[string name, params object[] arguments] => throw new NotImplementedException();
+        public StringLocalizer(
+            CultureInfo culture,
+            Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProvider) : this(modelProvider)
+        {
+            _culture = culture;
+        }
+
+        public LocalizedString this[string name] => new LocalizedString(name, _modelProvider()[Culture.Name][name]);
+
+		public LocalizedString this[string name, params object[] arguments] => new LocalizedString(name, _modelProvider()[Culture.Name][name]);
 
         public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
         {
-            throw new NotImplementedException();
+            return _modelProvider()[Culture.Name].Select(kvp => new LocalizedString(kvp.Key, kvp.Value));
         }
 
         public IStringLocalizer WithCulture(CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return new StringLocalizer(culture, _modelProvider);
         }
     }
 }

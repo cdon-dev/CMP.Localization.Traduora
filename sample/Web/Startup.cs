@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Globalization;
 using Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 
@@ -15,19 +16,35 @@ namespace Web
         {
             services.AddMvc();
 
-            services.AddHttpClient("HttpClient");
+            services.AddTraduora();
 
-            services.AddSingleton<IStringLocalizer>(new StringLocalizer(() =>
-                new Dictionary<string, IReadOnlyDictionary<string, string>>()));
+            services.AddSingleton<IStringLocalizer>(sp =>
+                {
+                    return new StringLocalizer(
+                        () => sp.GetRequiredService<ITraduoraService>().GetTranslations().Result);
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en"),
+                new CultureInfo("de-DE")
+            };
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(supportedCultures[0]),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseMvcWithDefaultRoute();
         }

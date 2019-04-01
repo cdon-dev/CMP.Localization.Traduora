@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Net.Http;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json.Linq;
 using Traduora.Client;
 
@@ -12,31 +15,22 @@ namespace Web.Controllers
     {
         private readonly IConfiguration _config;
         private readonly IHttpClientFactory _httpClientFactory;
+        private IStringLocalizer _localizer;
 
-        public HomeController(IConfiguration config, IHttpClientFactory httpClientFactory)
+        public HomeController(IConfiguration config, IStringLocalizer localizer, IHttpClientFactory httpClientFactory)
         {
             _config = config;
+            _localizer = localizer;
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<string> Index(string locale = "de_DE")
+        public IActionResult Index(string locale = "de_DE")
         {
-            //Change the 3 variables below for your Traduora project and API Key=======
-            string clientId = _config["Traduora2:ClientId"];
-            string clientSecret = _config["Traduora2:Secret"];
-            string projectId = "03aac4d9-a898-49f0-8546-1343c2964b4a";
-            //=========================================================================
+            ViewBag.HelloWorld = "Hello World";
 
-            HttpClient httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_config["TraduoraApi:BaseUrl"]);
+            ViewBag.SomeMessage = _localizer["first"];
 
-            var traduoraClient = new TraduoraClient(httpClient);
-
-            string key = await traduoraClient.Authenticate(clientId, clientSecret);
-
-            JObject exportedJson = await traduoraClient.GetTranslations(projectId, locale, key);
-
-            return $"This is the home controller speaking. \n\nHere are some translations: \n\n{exportedJson}";
+            return View();
         }
     }
 }

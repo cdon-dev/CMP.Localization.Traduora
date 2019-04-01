@@ -10,6 +10,9 @@ namespace Traduora.Client.Api
         Task<JObject> GetExportedData(string projectId, string format, string locale,
             [Header("Authorization")] string auth);
 
+        [Get("/projects/{projectId}/translations")]
+        Task<JObject> GetLocales(string projectId, [Header("Authorization")] string auth);
+
         [Post("/auth/token")]
         Task<JObject> GetToken([Body] ApiCredentials apiCredentials);
     }
