@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Core
@@ -13,22 +11,28 @@ namespace Core
 
         private IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> _data;
 
-        private IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Data
+        private IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> GetData()
         {
-            get
-            {
-                if (_data != null) return _data;
+            if (_data != null) return _data;
 
-                _data = _asyncDataProvider().Result;
-                return _data;
-            }
+            _data = _asyncDataProvider().Result;
+            return _data;
         }
 
-        public Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> DataProvider => () => Data;
+        private readonly Timer _refreshTimer;
 
-        public CacheManager(Func<Task<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>>> asyncDataProvider)
+        public Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> DataProvider => GetData;
+
+        public CacheManager(Func<Task<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>>> asyncDataProvider, int refreshMilliseconds)
         {
             _asyncDataProvider = asyncDataProvider;
+
+            _refreshTimer = new Timer(RefreshData, null, refreshMilliseconds, refreshMilliseconds);
+        }
+
+        private async void RefreshData(object _)
+        {
+            _data = await _asyncDataProvider();
         }
     }
 }

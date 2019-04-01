@@ -23,7 +23,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddSingleton<IStringLocalizer>(sp =>
             {
-                var cache = new CacheManager(sp.GetRequiredService<ITraduoraService>().GetTranslations);
+                var config = sp.GetRequiredService<IConfiguration>();
+                int refreshMilliseconds = Convert.ToInt32(config["TraduoraApi:RefreshMilliseconds"]);
+
+                var cache = new CacheManager(sp.GetRequiredService<ITraduoraService>().GetTranslations, refreshMilliseconds);
 
                 return new StringLocalizer(cache.DataProvider);
             });

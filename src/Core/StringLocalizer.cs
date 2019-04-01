@@ -11,11 +11,7 @@ namespace Core
 		private readonly Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> _modelProvider;
 
         private CultureInfo _culture;
-        private CultureInfo Culture
-        {
-            get => _culture ?? CultureInfo.CurrentUICulture;
-            set => _culture = value;
-        }
+        private CultureInfo Culture => _culture ?? CultureInfo.CurrentUICulture;
 
         public StringLocalizer(Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProvider)
         {
