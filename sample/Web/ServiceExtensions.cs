@@ -3,7 +3,7 @@ using System.Net.Http;
 using Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
-using Traduora.Client;
+using Traduora.Provider;
 using Web;
 
 // ReSharper disable once CheckNamespace

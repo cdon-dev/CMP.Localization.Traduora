@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Traduora.Client.Api
+namespace Traduora.Provider.Api
 {
     internal class ApiCredentials
     {

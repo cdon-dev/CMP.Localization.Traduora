@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using Refit;
 
-namespace Traduora.Client.Api
+namespace Traduora.Provider.Api
 {
     internal interface ITraduoraApi
     {

@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
 namespace Web.Controllers

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Traduora.Client</AssemblyName>
+    <AssemblyName>Traduora.Provider</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

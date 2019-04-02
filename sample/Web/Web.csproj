@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.csproj" />
-    <ProjectReference Include="..\..\src\Traduora\Traduora.Client.csproj" />
+    <ProjectReference Include="..\..\src\Traduora\Traduora.Provider.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,9 +4,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Refit;
-using Traduora.Client.Api;
+using Traduora.Provider.Api;
 
-namespace Traduora.Client
+namespace Traduora.Provider
 {
     public class TraduoraClient
     {
