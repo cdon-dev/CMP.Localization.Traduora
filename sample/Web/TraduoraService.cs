@@ -10,12 +10,12 @@ namespace Web
     public class TraduoraService : ITraduoraService
     {
         private readonly IConfiguration _config;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly TraduoraClient _traduora;
 
-        public TraduoraService(IConfiguration config, IHttpClientFactory httpClientFactory)
+        public TraduoraService(IConfiguration config, TraduoraClient traduora)
         {
             _config = config;
-            _httpClientFactory = httpClientFactory;
+            _traduora = traduora;
         }
 
         public async Task<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> GetTranslations()
@@ -26,13 +26,9 @@ namespace Web
             string projectId = "03aac4d9-a898-49f0-8546-1343c2964b4a";
             //=========================================================================
 
-            HttpClient httpClient = _httpClientFactory.CreateClient(ServiceExtensions.HttpClientName);
+            string key = await _traduora.Authenticate(clientId, clientSecret);
 
-            var traduoraClient = new TraduoraClient(httpClient);
-
-            string key = await traduoraClient.Authenticate(clientId, clientSecret);
-
-            return await traduoraClient.GetData(projectId, key);
+            return await _traduora.GetData(projectId, key);
         }
     }
 

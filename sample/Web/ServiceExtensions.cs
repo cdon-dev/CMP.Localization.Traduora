@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Net.Http;
 using Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
+using Traduora.Client;
 using Web;
 
 // ReSharper disable once CheckNamespace
@@ -29,6 +31,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 var cache = new CacheManager(sp.GetRequiredService<ITraduoraService>().GetTranslations, refreshMilliseconds);
 
                 return new StringLocalizer(cache.DataProvider);
+            });
+
+            services.AddTransient(sp =>
+            {
+                HttpClient httpClient = sp.GetRequiredService<IHttpClientFactory>()
+                    .CreateClient(HttpClientName);
+
+                return new TraduoraClient(httpClient);
             });
 
             return services;
