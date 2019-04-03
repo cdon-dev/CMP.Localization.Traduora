@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using CachedLocalizer;
+using CachedLocalizer.Cache;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
@@ -36,9 +37,9 @@ namespace Web
                 int refreshMilliseconds = Convert.ToInt32(config["TraduoraApi:RefreshMilliseconds"]);
 
                 // TODO: use typed configuration
-                var cache = new CacheManager(sp.GetRequiredService<ITraduoraService>().GetTranslations, TimeSpan.FromMilliseconds(refreshMilliseconds));
+                var cache = new DictionaryPollingCache(sp.GetRequiredService<ITraduoraService>().GetTranslations, TimeSpan.FromMilliseconds(refreshMilliseconds));
 
-                return new CachedDictionaryStringLocalizer(cache.DataProvider);
+                return new CachedDictionaryStringLocalizer(cache.GetData);
             });
 
             return services;

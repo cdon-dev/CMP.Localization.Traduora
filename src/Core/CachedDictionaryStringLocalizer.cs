@@ -10,12 +10,8 @@ namespace CachedLocalizer
 	{
 		private readonly Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> _modelProvider;
 
-        private CultureInfo _culture;
-        private CultureInfo Culture
-        {
-            get => _culture ?? CultureInfo.CurrentUICulture;
-            set => _culture = value;
-        }
+        private readonly CultureInfo _culture;
+        private CultureInfo Culture => _culture ?? CultureInfo.CurrentUICulture;
 
         public CachedDictionaryStringLocalizer(Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProvider)
         {
@@ -29,9 +25,37 @@ namespace CachedLocalizer
             _culture = culture;
         }
 
-        public LocalizedString this[string name] => new LocalizedString(name, _modelProvider()[Culture.Name][name]);
+        public LocalizedString this[string name]
+        {
+            get
+            {
+                try
+                {
+                    return new LocalizedString(name, _modelProvider()[Culture.Name][name]);
+                }
+                catch
+                {
+                    return new LocalizedString(name, name);
+                }
+            }
+        }
 
-		public LocalizedString this[string name, params object[] arguments] => new LocalizedString(name, _modelProvider()[Culture.Name][name]);
+        public LocalizedString this[string name, params object[] arguments]
+        {
+            get
+            {
+                try
+                {
+                    string formattedString = string.Format(_modelProvider()[Culture.Name][name], arguments);
+
+                    return new LocalizedString(name, formattedString);
+                }
+                catch
+                {
+                    return new LocalizedString(name, name);
+                }
+            }
+        }
 
         public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
         {
