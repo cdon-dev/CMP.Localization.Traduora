@@ -1,11 +1,10 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using CachedLocalizer;
 using CachedLocalizer.Cache;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Traduora.Provider;
+using Web.Config;
 
 namespace Web
 {
@@ -14,11 +13,12 @@ namespace Web
         private const string HttpClientName = "traduora";
         public static IServiceCollection AddTraduora(this IServiceCollection services)
         {
-            services.AddHttpClient(HttpClientName)
+            services
+                .AddHttpClient(HttpClientName)
                 .ConfigureHttpClient((sp, client) =>
             {
-                var config = sp.GetRequiredService<IConfiguration>();
-                client.BaseAddress = new Uri(config["TraduoraApi:BaseUrl"]);
+                var traduoraApiSettings = sp.GetRequiredService<TraduoraApiSettings>();
+                client.BaseAddress = traduoraApiSettings.BaseUrl;
             });
 
             services.AddTransient(sp =>
@@ -33,11 +33,11 @@ namespace Web
 
             services.AddSingleton<IStringLocalizer>(sp =>
             {
-                var config = sp.GetRequiredService<IConfiguration>();
-                int refreshMilliseconds = Convert.ToInt32(config["TraduoraApi:RefreshMilliseconds"]);
+                var traduoraApiSettings = sp.GetRequiredService<TraduoraApiSettings>();
 
-                // TODO: use typed configuration
-                var cache = new DictionaryPollingCache(sp.GetRequiredService<ITraduoraService>().GetTranslations, TimeSpan.FromMilliseconds(refreshMilliseconds));
+                var cache = new DictionaryPollingCache(
+                    sp.GetRequiredService<ITraduoraService>().GetTranslations,
+                    traduoraApiSettings.RefreshIntervalSeconds);
 
                 return new CachedDictionaryStringLocalizer(cache.GetData);
             });
