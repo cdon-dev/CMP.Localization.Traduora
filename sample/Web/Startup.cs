@@ -22,7 +22,9 @@ namespace Web
             var supportedCultures = new[]
             {
                 new CultureInfo("en"),
-                new CultureInfo("de-DE")
+                new CultureInfo("en-US"),
+                new CultureInfo("de-DE"),
+                new CultureInfo("sv-SE"),
             };
 
             if (env.IsDevelopment())

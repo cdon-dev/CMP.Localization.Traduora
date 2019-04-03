@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Net.Http;
-using Core;
+using CachedLocalizer;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Traduora.Provider;
-using Web;
 
-// ReSharper disable once CheckNamespace
-namespace Microsoft.Extensions.DependencyInjection
+namespace Web
 {
     public static class ServiceExtensions
     {
-        public const string HttpClientName = "traduora";
+        private const string HttpClientName = "traduora";
         public static IServiceCollection AddTraduora(this IServiceCollection services)
         {
             services.AddHttpClient(HttpClientName)
@@ -21,6 +20,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 client.BaseAddress = new Uri(config["TraduoraApi:BaseUrl"]);
             });
 
+            services.AddTransient(sp =>
+            {
+                HttpClient httpClient = sp.GetRequiredService<IHttpClientFactory>()
+                    .CreateClient(HttpClientName);
+
+                return new TraduoraProvider(httpClient);
+            });
+
             services.AddTransient<ITraduoraService, TraduoraService>();
 
             services.AddSingleton<IStringLocalizer>(sp =>
@@ -28,17 +35,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 var config = sp.GetRequiredService<IConfiguration>();
                 int refreshMilliseconds = Convert.ToInt32(config["TraduoraApi:RefreshMilliseconds"]);
 
-                var cache = new CacheManager(sp.GetRequiredService<ITraduoraService>().GetTranslations, refreshMilliseconds);
+                // TODO: use typed configuration
+                var cache = new CacheManager(sp.GetRequiredService<ITraduoraService>().GetTranslations, TimeSpan.FromMilliseconds(refreshMilliseconds));
 
-                return new StringLocalizer(cache.DataProvider);
-            });
-
-            services.AddTransient(sp =>
-            {
-                HttpClient httpClient = sp.GetRequiredService<IHttpClientFactory>()
-                    .CreateClient(HttpClientName);
-
-                return new TraduoraClient(httpClient);
+                return new CachedDictionaryStringLocalizer(cache.DataProvider);
             });
 
             return services;

@@ -12,11 +12,11 @@ namespace Web.Controllers
             _localizer = localizer;
         }
 
-        public IActionResult Index(string locale = "de_DE")
+        public IActionResult Index()
         {
             ViewBag.HelloWorld = "Hello World";
 
-            ViewBag.SomeMessage = _localizer["first"];
+            ViewBag.Messages = new [] { _localizer["oneTerm"], _localizer["twoTerm"], _localizer["threeTerm"] };
 
             return View();
         }

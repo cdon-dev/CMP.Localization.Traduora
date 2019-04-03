@@ -8,9 +8,9 @@ namespace Web
     public class TraduoraService : ITraduoraService
     {
         private readonly IConfiguration _config;
-        private readonly TraduoraClient _traduora;
+        private readonly TraduoraProvider _traduora;
 
-        public TraduoraService(IConfiguration config, TraduoraClient traduora)
+        public TraduoraService(IConfiguration config, TraduoraProvider traduora)
         {
             _config = config;
             _traduora = traduora;

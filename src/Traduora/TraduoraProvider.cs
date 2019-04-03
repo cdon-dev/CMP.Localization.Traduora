@@ -8,12 +8,12 @@ using Traduora.Provider.Api;
 
 namespace Traduora.Provider
 {
-    public class TraduoraClient
+    public class TraduoraProvider
     {
         private readonly ITraduoraApi _traduoraApi;
         private const string DefaultFormat = "jsonnested";
 
-        public TraduoraClient(HttpClient httpClient)
+        public TraduoraProvider(HttpClient httpClient)
         {
             _traduoraApi = RestService.For<ITraduoraApi>(httpClient);
         }

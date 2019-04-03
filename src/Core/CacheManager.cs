@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Core
+namespace CachedLocalizer
 {
     public class CacheManager
     {
@@ -11,23 +11,23 @@ namespace Core
 
         private IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> _data;
 
+        private readonly Timer _refreshTimer;
+
+        public CacheManager(Func<Task<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>>> asyncDataProvider, TimeSpan refreshInterval)
+        {
+            _asyncDataProvider = asyncDataProvider;
+
+            _refreshTimer = new Timer(RefreshData, null, refreshInterval, refreshInterval);
+        }
+
+        public Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> DataProvider => GetData;
+
         private IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> GetData()
         {
             if (_data != null) return _data;
 
             _data = _asyncDataProvider().Result;
             return _data;
-        }
-
-        private readonly Timer _refreshTimer;
-
-        public Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> DataProvider => GetData;
-
-        public CacheManager(Func<Task<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>>> asyncDataProvider, int refreshMilliseconds)
-        {
-            _asyncDataProvider = asyncDataProvider;
-
-            _refreshTimer = new Timer(RefreshData, null, refreshMilliseconds, refreshMilliseconds);
         }
 
         private async void RefreshData(object _)

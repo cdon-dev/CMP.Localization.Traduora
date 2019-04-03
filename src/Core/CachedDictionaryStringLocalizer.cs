@@ -4,21 +4,25 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.Extensions.Localization;
 
-namespace Core
+namespace CachedLocalizer
 {
-	public class StringLocalizer : IStringLocalizer
+	public class CachedDictionaryStringLocalizer : IStringLocalizer
 	{
 		private readonly Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> _modelProvider;
 
         private CultureInfo _culture;
-        private CultureInfo Culture => _culture ?? CultureInfo.CurrentUICulture;
+        private CultureInfo Culture
+        {
+            get => _culture ?? CultureInfo.CurrentUICulture;
+            set => _culture = value;
+        }
 
-        public StringLocalizer(Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProvider)
+        public CachedDictionaryStringLocalizer(Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProvider)
         {
             _modelProvider = modelProvider;
         }
 
-        public StringLocalizer(
+        public CachedDictionaryStringLocalizer(
             CultureInfo culture,
             Func<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> modelProvider) : this(modelProvider)
         {
@@ -36,7 +40,7 @@ namespace Core
 
         public IStringLocalizer WithCulture(CultureInfo culture)
         {
-            return new StringLocalizer(culture, _modelProvider);
+            return new CachedDictionaryStringLocalizer(culture, _modelProvider);
         }
     }
 }

@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "sample\Web\Web.csproj", "{17E01B10-44A9-4896-96C4-F6D948DEC5F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "src\Core\Core.csproj", "{79B4E158-DADA-4A56-A3BC-E0CCD012FA10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachedLocalizer", "src\Core\CachedLocalizer.csproj", "{79B4E158-DADA-4A56-A3BC-E0CCD012FA10}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Traduora.Provider", "src\Traduora\Traduora.Provider.csproj", "{A007D934-6807-49F7-B31F-34B9C6AFC5C9}"
 EndProject
