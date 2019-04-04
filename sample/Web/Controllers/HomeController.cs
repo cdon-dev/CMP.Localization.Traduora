@@ -1,42 +1,24 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
-using Traduora.Client;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IConfiguration _config;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private IStringLocalizer _localizer;
 
-        public HomeController(IConfiguration config, IHttpClientFactory httpClientFactory)
+        public HomeController(IStringLocalizer localizer)
         {
-            _config = config;
-            _httpClientFactory = httpClientFactory;
+            _localizer = localizer;
         }
 
-        public async Task<string> Index(string locale = "de_DE")
+        public IActionResult Index()
         {
-            //Change the 3 variables below for your Traduora project and API Key=======
-            string clientId = _config["Traduora2:ClientId"];
-            string clientSecret = _config["Traduora2:Secret"];
-            string projectId = "03aac4d9-a898-49f0-8546-1343c2964b4a";
-            //=========================================================================
+            ViewBag.HelloWorld = "Hello World";
 
-            HttpClient httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_config["TraduoraApi:BaseUrl"]);
+            ViewBag.Messages = new [] { _localizer["oneTerm"], _localizer["twoTerm"], _localizer["threeTerm"] };
 
-            var traduoraClient = new TraduoraClient(httpClient);
-
-            string key = await traduoraClient.Authenticate(clientId, clientSecret);
-
-            JObject exportedJson = await traduoraClient.GetTranslations(projectId, locale, key);
-
-            return $"This is the home controller speaking. \n\nHere are some translations: \n\n{exportedJson}";
+            return View();
         }
     }
 }

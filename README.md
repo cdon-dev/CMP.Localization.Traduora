@@ -26,5 +26,5 @@ dotnet run -p sample\Web\Web.csproj
 
 #### URL's to explore
 * http://localhost:52512
-* http://localhost:52512/?locale=en
-* http://localhost:52512/?locale=de_DE
+* http://localhost:52512/?culture=en
+* http://localhost:52512/?culture=de-DE

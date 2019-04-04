@@ -1,0 +1,14 @@
+﻿@model object
+
+@{
+    ViewBag.Title = "title";
+}
+
+<h2>Let's see what's goin on here: @ViewBag.HelloWorld</h2>
+
+<br />
+@foreach (var msg in ViewBag.Messages)
+{
+    <h1>@msg</h1>
+}
+
