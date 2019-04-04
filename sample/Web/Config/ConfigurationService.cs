@@ -7,9 +7,8 @@ namespace Web.Config
     {
         public static IServiceCollection AddTypedConfiguration(this IServiceCollection services, IConfiguration config)
         {
-            services.UseConfigurationValidation();
-            services.ConfigureValidatableSetting<TraduoraApiSettings>(config.GetSection("TraduoraApi"));
-            services.ConfigureValidatableSetting<TraduoraSecretSettings>(config.GetSection("TraduoraSecrets"));
+            services.Configure<TraduoraApiSettings>(config.GetSection("TraduoraApi"));
+            services.Configure<TraduoraSecretSettings>(config.GetSection("TraduoraSecrets"));
 
             return services;
         }

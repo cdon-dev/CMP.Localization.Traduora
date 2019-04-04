@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using Traduora.Provider;
 using Web.Config;
 
@@ -10,9 +11,9 @@ namespace Web
         private readonly TraduoraSecretSettings _config;
         private readonly TraduoraProvider _traduora;
 
-        public TraduoraService(TraduoraSecretSettings config, TraduoraProvider traduora)
+        public TraduoraService(IOptions<TraduoraSecretSettings> config, TraduoraProvider traduora)
         {
-            _config = config;
+            _config = config.Value;
             _traduora = traduora;
         }
 

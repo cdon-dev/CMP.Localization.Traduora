@@ -3,6 +3,7 @@ using CachedLocalizer;
 using CachedLocalizer.Cache;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using Traduora.Provider;
 using Web.Config;
 
@@ -17,7 +18,7 @@ namespace Web
                 .AddHttpClient(HttpClientName)
                 .ConfigureHttpClient((sp, client) =>
             {
-                var traduoraApiSettings = sp.GetRequiredService<TraduoraApiSettings>();
+                var traduoraApiSettings = sp.GetRequiredService<IOptions<TraduoraApiSettings>>().Value;
                 client.BaseAddress = traduoraApiSettings.BaseUrl;
             });
 
@@ -33,7 +34,7 @@ namespace Web
 
             services.AddSingleton<IStringLocalizer>(sp =>
             {
-                var traduoraApiSettings = sp.GetRequiredService<TraduoraApiSettings>();
+                var traduoraApiSettings = sp.GetRequiredService<IOptions<TraduoraApiSettings>>().Value;
 
                 var cache = new DictionaryPollingCache(
                     sp.GetRequiredService<ITraduoraService>().GetTranslations,
