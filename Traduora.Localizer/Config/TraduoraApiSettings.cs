@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Web.Config
+namespace Traduora.Localizer.Config
 {
     public class TraduoraApiSettings
     {

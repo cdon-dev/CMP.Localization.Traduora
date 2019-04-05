@@ -1,4 +1,4 @@
-﻿namespace Web.Config
+﻿namespace Traduora.Localizer.Config
 {
     public class TraduoraSecretSettings
     {

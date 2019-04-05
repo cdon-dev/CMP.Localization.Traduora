@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Traduora.Localizer.Config;
 using Traduora.Provider;
-using Web.Config;
 
-namespace Web
+namespace Traduora.Localizer
 {
     public class TraduoraService
     {

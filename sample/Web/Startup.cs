@@ -1,13 +1,11 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Web.Config;
+using Traduora.Localizer;
+using Traduora.Localizer.Config;
 
 namespace Web
 {
@@ -24,14 +22,19 @@ namespace Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<TraduoraApiSettings>(_config.GetSection("blla"));
             services.AddMvc();
-            services.AddTypedConfiguration(_config);
-            services.AddTraduora();
+            services.AddTraduora(_config);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
             var supportedCultures = new[]
             {
                 new CultureInfo("en"),
@@ -39,11 +42,6 @@ namespace Web
                 new CultureInfo("de-DE"),
                 new CultureInfo("sv-SE"),
             };
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
 
             app.UseRequestLocalization(new RequestLocalizationOptions
             {

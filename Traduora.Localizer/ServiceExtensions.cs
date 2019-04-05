@@ -1,24 +1,27 @@
 ﻿using System.Net.Http;
-using CachedLocalizer;
-using CachedLocalizer.Cache;
+using DynamicDictionaryLocalizer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Traduora.Localizer.Cache;
+using Traduora.Localizer.Config;
 using Traduora.Provider;
-using Web.Config;
 
-namespace Web
+namespace Traduora.Localizer
 {
     public static class ServiceExtensions
     {
         private const string HttpClientName = "traduora";
-        public static IServiceCollection AddTraduora(this IServiceCollection services)
+        public static IServiceCollection AddTraduora(this IServiceCollection services, IConfiguration config)
         {
+            services.AddTypedConfiguration(config);
+
             services
                 .AddHttpClient(HttpClientName)
                 .ConfigureHttpClient((sp, client) =>
             {
-                var traduoraApiSettings = sp.GetRequiredService<IOptions<TraduoraApiSettings>>().Value;
+                TraduoraApiSettings traduoraApiSettings = sp.GetRequiredService<IOptions<TraduoraApiSettings>>().Value;
                 client.BaseAddress = traduoraApiSettings.BaseUrl;
             });
 
@@ -41,7 +44,7 @@ namespace Web
                     sp.GetRequiredService<TraduoraService>().GetTranslations,
                     traduoraApiSettings.RefreshIntervalSeconds);
 
-                return new CachedDictionaryStringLocalizer(cache.GetData);
+                return new DynamicDictionaryStringLocalizer(cache.GetData);
             });
 
             return services;

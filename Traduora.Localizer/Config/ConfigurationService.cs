@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Web.Config
+namespace Traduora.Localizer.Config
 {
     public static class ConfigurationService
     {
