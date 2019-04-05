@@ -6,7 +6,7 @@ using Web.Config;
 
 namespace Web
 {
-    public class TraduoraService : ITraduoraService
+    public class TraduoraService
     {
         private readonly TraduoraSecretSettings _config;
         private readonly TraduoraProvider _traduora;
@@ -23,10 +23,5 @@ namespace Web
 
             return await _traduora.GetData(_config.ProjectId, key);
         }
-    }
-
-    public interface ITraduoraService
-    {
-        Task<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> GetTranslations();
     }
 }

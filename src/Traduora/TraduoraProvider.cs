@@ -2,7 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Refit;
 using Traduora.Provider.Api;
 
@@ -15,16 +16,23 @@ namespace Traduora.Provider
 
         public TraduoraProvider(HttpClient httpClient)
         {
-            _traduoraApi = RestService.For<ITraduoraApi>(httpClient);
+            var refitSettings = new RefitSettings
+            {
+                ContentSerializer = new JsonContentSerializer(
+                    new JsonSerializerSettings
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    })
+            };
+
+            _traduoraApi = RestService.For<ITraduoraApi>(httpClient, refitSettings);
         }
 
         public async Task<string> Authenticate(string clientId, string clientSecret)
         {
             var authBody = new ApiCredentials { ClientId = clientId, ClientSecret = clientSecret };
 
-            JToken responseJson = await _traduoraApi.GetToken(authBody);
-
-            return responseJson["data"]["accessToken"].Value<string>();
+            return (await _traduoraApi.GetToken(authBody)).AccessToken;
         }
 
         public async Task<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>>
@@ -33,15 +41,11 @@ namespace Traduora.Provider
         {
             var output = new Dictionary<string, IReadOnlyDictionary<string, string>>();
 
-            JObject localesJson = await _traduoraApi.GetLocales(projectId, $"Bearer {authToken}");
+            LocalesResponse localesJson = await _traduoraApi.GetLocales(projectId, $"Bearer {authToken}");
 
-            foreach (JToken localeObject in localesJson["data"].Value<JArray>())
+            foreach (LocaleWrapper locale in localesJson.Data)
             {
-                string localeCode = localeObject["locale"]["code"].Value<string>();
-
-                string culture = localeCode.Replace('_', '-');
-
-                output[culture] = await GetTranslations(projectId, localeCode, authToken, format);
+                output[locale.Locale.Culture] = await GetTranslations(projectId, locale.Locale.Code, authToken, format);
             }
 
             return new ReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>(output);
@@ -51,20 +55,10 @@ namespace Traduora.Provider
             GetTranslations(string projectId, string locale, string authToken,
             string format = DefaultFormat)
         {
-            JObject exportedJson = await _traduoraApi.GetExportedData(projectId, format, locale, $"Bearer {authToken}");
+            Dictionary<string, string> exportedResult =
+                await _traduoraApi.GetExportedData(projectId, format, locale, $"Bearer {authToken}");
 
-            return ToReadOnlyDictionary(exportedJson);
-        }
-
-        private static IReadOnlyDictionary<string, string> ToReadOnlyDictionary(JObject exportedJson)
-        {
-            var output = new Dictionary<string, string>();
-            foreach (JProperty jProperty in exportedJson.Properties())
-            {
-                output[jProperty.Name] = jProperty.Value.Value<string>();
-            }
-
-            return new ReadOnlyDictionary<string, string>(output);
+            return new ReadOnlyDictionary<string, string>(exportedResult);
         }
     }
 }

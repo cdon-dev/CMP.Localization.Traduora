@@ -30,14 +30,15 @@ namespace Web
                 return new TraduoraProvider(httpClient);
             });
 
-            services.AddTransient<ITraduoraService, TraduoraService>();
+            services.AddTransient<TraduoraService>();
 
             services.AddSingleton<IStringLocalizer>(sp =>
             {
-                var traduoraApiSettings = sp.GetRequiredService<IOptions<TraduoraApiSettings>>().Value;
+                TraduoraApiSettings traduoraApiSettings =
+                    sp.GetRequiredService<IOptions<TraduoraApiSettings>>().Value;
 
                 var cache = new DictionaryPollingCache(
-                    sp.GetRequiredService<ITraduoraService>().GetTranslations,
+                    sp.GetRequiredService<TraduoraService>().GetTranslations,
                     traduoraApiSettings.RefreshIntervalSeconds);
 
                 return new CachedDictionaryStringLocalizer(cache.GetData);
