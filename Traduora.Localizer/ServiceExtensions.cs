@@ -2,6 +2,7 @@
 using DynamicDictionaryLocalizer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Traduora.Localizer.Cache;
@@ -35,17 +36,19 @@ namespace Traduora.Localizer
 
             services.AddTransient<TraduoraService>();
 
-            services.AddSingleton<IStringLocalizer>(sp =>
+            services.AddSingleton(sp =>
             {
                 TraduoraApiSettings traduoraApiSettings =
                     sp.GetRequiredService<IOptions<TraduoraApiSettings>>().Value;
 
-                var cache = new DictionaryPollingCache(
+                return new TranslationPollingService(
                     sp.GetRequiredService<TraduoraService>().GetTranslations,
                     traduoraApiSettings.RefreshIntervalSeconds);
-
-                return new DynamicDictionaryStringLocalizer(cache.GetData);
             });
+            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<TranslationPollingService>());
+
+            services.AddSingleton<IStringLocalizer>(sp =>
+                new DynamicDictionaryStringLocalizer(() => sp.GetRequiredService<TranslationPollingService>().Data));
 
             return services;
         }

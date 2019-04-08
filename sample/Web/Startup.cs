@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Traduora.Localizer;
-using Traduora.Localizer.Config;
 
 namespace Web
 {
@@ -22,7 +21,6 @@ namespace Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<TraduoraApiSettings>(_config.GetSection("blla"));
             services.AddMvc();
             services.AddTraduora(_config);
         }
